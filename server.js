@@ -15,6 +15,9 @@ const app = express();
 //parses incoming requests with JSON 
 app.use(express.json())
 
+//processes form data
+app.use(express.urlencoded())
+
 //ROUTES
 app.get("/", function(req, res) {
     res.send("home page")
