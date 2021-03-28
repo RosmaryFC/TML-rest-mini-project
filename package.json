@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/RosmaryFC/TML-rest-mini-project#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "knex": "^0.95.4",
+    "pg": "^8.5.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
