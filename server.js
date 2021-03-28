@@ -25,8 +25,21 @@ app.use(express.json())
 app.use(express.urlencoded())
 
 //ROUTES
-app.get("/", function(req, res) {
-    res.send("home page")
+app.get("/", async function  (req, res) {
+    //used to test connection between db and backend
+    // try{
+    //     const businesses = await db.any('select * from businesses');
+    //     res.status(200)
+    //     return res.json(businesses)
+    // } catch (err) {
+    //     res.status(500).send(err)
+    // }
+    try{
+        res.status(200)
+        return res.json("hello world")
+    }catch(err) {
+        res.status(500).send(err)
+    }
 });
 
 
