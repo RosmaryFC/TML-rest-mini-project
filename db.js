@@ -5,11 +5,11 @@ const pg = require('pg-promise')()
 require('dotenv').config()
 
 const db = pg({
-  "host": process.env.DB_HOST,
+  "host": process.env.HOST,
   "port": 5432,
   "database": "rest_mini_project",
-  "user": process.env.DB_USER,
-  "password": process.env.DB_PASS
+  "user": process.env.PGNAME,
+  "password": process.env.PGPASSWORD
 })
 
 module.exports = db;
