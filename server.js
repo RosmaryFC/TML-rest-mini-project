@@ -1,5 +1,11 @@
 //DEPENDENCIES
+require('dotenv').config()
 const express  = require ("express");
+
+//DATABASE
+// const db = require('./db') 
+
+
 
 //GLOBAL VARIABLES
 const PORT = process.env.PORT || 3000;

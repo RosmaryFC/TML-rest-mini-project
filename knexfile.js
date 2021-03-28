@@ -5,18 +5,18 @@ module.exports = {
   development: {
     client: 'postgresql',
     connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
+      database: 'rest_mini_project',
+      user: process.env.PGUSERNAME,
+      password: process.env.PGPASSWORD
     }
   },
 
   staging: {
     client: 'postgresql',
     connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
+      database: 'rest_mini_project',
+      user: process.env.PGUSERNAME,
+      password: process.env.PGPASSWORD
     },
     pool: {
       min: 2,
@@ -30,9 +30,9 @@ module.exports = {
   production: {
     client: 'postgresql',
     connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
+      database: 'rest_mini_project',
+      user: process.env.PGUSERNAME,
+      password: process.env.PGPASSWORD
     },
     pool: {
       min: 2,
