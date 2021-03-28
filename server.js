@@ -23,40 +23,81 @@ app.get("/", function(req, res) {
     res.send("home page")
 });
 
-
-
 //BUSINESS ROUTERS
+//route: /business GET
+// shows all businesses created
+app.get("/business", async (req, res) => {
+    try{
+        const business =await db.any(`select * from business`)
+        return res.json(business)
+    }
+    catch(err){
+        res.status(500).send(err)
+    }
+    //sql query to select * from businesses
+    //furniture making biz - 1
+    //web deve biz -2
+    //res.send("show businesses")
+});
+
 //route: /business POST
 //create a business
-app.post("/business", function(req, res) {
+app.post("/business", async (req, res) => {
+    try{
+        await db.none(
+            'insert into business (business_name,description,logo) values (${business_name},${description},${logo}',
+        req.body
+    }
+    return res.json({
+        message: "success"
+    })
+    }catch(err){
+        console.log(err)
+        res.status(500).send(err)
+    }
     //get data from req.body
     //db query to add business to business table
     //route to /business
 });
 
-//route: /business GET
-// shows all businesses created
-app.get("/business", function(req, res) {
-    //sql query to select * from businesses
-
-    //furniture making biz - 1
-    //web deve biz -2
-
-    res.send("show businesses")
-});
 
 //route: /business/id/:id GET
-//shows business with that id, and its posts
-app.get("/business/id/:id", function(req, res) {
+//shows business with that id
+app.get("/business/:id", async(req, res) =>{
+    const businessId=parseInt(req.params.id,10)
+    try{
+        const business=await db.one(
+            "select * from business where id = $1",
+            id
+        )
+        return res.json(business)
+    }
+    catch(err){
+        res.status(500).json(err)
+    }
     //get the business id from the route params
     //db query for that specific id and its posts
     //return query
-    res.send("show specific business")
+    //res.send("show specific business")
 });
 
 //route: /business/id/:id PUT
 //will update business info
-app.put("/business/id/:id", function(req, res) {
+app.put("/business/:id", async(req, res)=> {
+    const id=parseInt(req.params.id,10)
+    try{
+        await db.none("update business set business_name=$1, description=$2, logo=$3 where id = $6",[
+            req.body.business_name,
+            req.body.description,
+            req.body.logo,
+            req.body.created_at,
+            req.body.updated_at,
+            id
+        ])
+        res.json({
+            message: "success",
+        })
+    }
     //get data from req.body
     //receive data from fronted
     //db query to update business data in business table
@@ -64,7 +105,18 @@ app.put("/business/id/:id", function(req, res) {
 
 //route: /business/id/:id DELETE
 //will delete business, posts, comments
-app.delete("/business/id/:id", function(req, res) {
+app.delete("/business/:id", async(req, res) =>{
+    const id=parseInt(req.params.id,10)
+    try{
+        await db.none('delete from business where id=$1',
+        id)
+    }
+    res.json({
+        message:"success"
+    })
+    catch(err){
+        res.status(500).json(err)
+    }
     //db query to remove business data in business table, along with posts and comments
 
     //return 200 - OK
@@ -72,37 +124,74 @@ app.delete("/business/id/:id", function(req, res) {
 });
 
 
+//route: /business/id/:id/post/:postid GET
+//get specific post info and comments for specific business
+
+//get all posts for a business
+app.get("/business/:id/posts", async(req,res)=>{
+    const id=parseInt(req.params.business_id,10)
+    try{
+        const posts=await db.any(`select * from posts where business_id=$1`,
+        id)
+        return res.json(posts)
+    }
+    catch(err){
+        res.status(500).send(err)
+    }
+}
 
 //BUSINESS POST ROUTERS
 //route: /business/id/:id POST
 //create a post
-app.post("/business/id/:id", function(req, res) {
+app.post("/business/:id/posts", async(req, res) =>{
+    try{
+        await db.none(
+            'insert into posts (description,url,business_id) values (${description},${url},${business_id}',
+        req.body
+    }
+    return res.json({
+        message: "success"
+    })
+    }catch(err){
+        console.log(err)
+        res.status(500).send(err)
+    }
     //get data from req.body
-    //query to insert data into business table
-
+    //query to insert data into business tablell,
     //return post data - 200 ok
 
 });
 
-//route: /business/id/:id/post/:postid GET
-//get post info and comments for specific business
-app.get("/business/id/:id/post/:postid", function(req, res) {
-
-
-    res.send("show post")
-});
 
 //route: /business/id/:id/post/:postid PUT
 //update a post
-app.put("/business/id/:id/post/:postid", function(req, res) {
+app.put("/business/:id/posts/:postid", async(req, res)=> {
+    const postid=parseInt(req.body.id,10)
+    try{
+        await db.none('update posts set description=$1, url=$2, business_id=$3 where postid=$4',[
+        req.body.description,
+        req.body.url,
+        req.body.business_id,
+        postid
+    ])
+    res.json({
+        message: "success",
+    })
+}
     //query to update post with specific id
-
 });
 
 //route: /business/id/:id/post/:postid DELETE
 //delete a post
-app.delete("/business/id/:id/post/:postid", function(req, res) {
-
+app.delete("/business/:id/posts/:postid", function(req, res) {
+    const postid=parseInt(req.body.id,10)
+    try{
+        await db.none('delete from posts where postid=$1',
+        postid)
+    }
+    res.json({
+        message:'success'
+    })
 });
 
 
@@ -110,14 +199,34 @@ app.delete("/business/id/:id/post/:postid", function(req, res) {
 //COMMENT ROUTERS
 //route: /business/id/:id/post/:postid/ POST
 //create comment
-app.post("/business/id/:id/post/:postid", function(req, res) {
+app.post("/business/:id/post/:postid/comments", function(req, res) {
+    try{
+        await db.none(
+            'insert into comments (description,post_id,business_id) values (${description},${post_id},${business_id}',
+        req.body
+    }
+    return res.json({
+        message: "success"
+    })
+    }catch(err){
+        console.log(err)
+        res.status(500).send(err)
+    }
     //get data from req.body
 
 });
 
 //route: /business/id/:id/post/:postid/comments GET
 //get all comments for specific post
-app.get("/business/id/:id/post/:postid/comment", function(req, res) {
+app.get("/business/:id/post/:postid/comments", function(req, res) {
+    const postid=parseInt(req.body.post_id)
+    try{
+        const comments= await db.any(`select * from comments where postid=$1`,
+        postid)
+    }
+    res.json({
+        message:'success'
+    })
     //get data from req.body
 
 });
@@ -125,7 +234,15 @@ app.get("/business/id/:id/post/:postid/comment", function(req, res) {
 
 //route: /business/id/:id/post/:id/comment/:commentid DELETE
 //delete a comment
-app.delete("/business/id/:id/post/:postid/comment/:commentid", function(req, res) {
+app.delete("/business/:id/post/:postid/comments/:commentid", async(req, res) =>{
+    const commentid=parseInt(req.body.id)
+    try{
+        await db.none(`delete from comments where id=$1`,
+        commentid)
+    }
+    res.json({
+        message:'success'
+    })
     //query to delete a comment
 
 });
