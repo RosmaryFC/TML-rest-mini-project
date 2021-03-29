@@ -5,7 +5,7 @@ exports.up = function(knex) {
         table.string('description').notNullable()
         table.string('url')
         table.integer('business_id').unsigned().notNullable()
-        table.timestamps()
+        table.timestamps(true,true)
 
         table.foreign('business_id').references('id').inTable('businesses')
     })
