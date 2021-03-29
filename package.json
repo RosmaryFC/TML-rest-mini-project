@@ -2,7 +2,7 @@
   "name": "mini-rest-api",
   "version": "1.0.0",
   "description": "Group project where we have created an api using express",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",

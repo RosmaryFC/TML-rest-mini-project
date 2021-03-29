@@ -7,7 +7,7 @@ exports.up = function(knex) {
         table.integer('business_id').unsigned().notNullable()
         table.timestamps(true,true)
 
-        table.foreign('business_id').references('id').inTable('businesses')
+        table.foreign('business_id').references('id').inTable('businesses').onDelete('CASCADE')
     })
 };
 
