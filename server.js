@@ -49,22 +49,17 @@ app.get("/", async function  (req, res) {
 //route: /business GET
 // shows all businesses created
 app.get("/business", async function (req, res) {
-    //sql query to select * from businesses
     try{
         const businesses = await db.any(`SELECT * FROM businesses`)
         return res.json(businesses)
     } catch(err){
         res.status(500).send(err)
     }
-    //furniture making biz - 1
-    //web deve biz -2
 });
 
 //route: /business POST
 //create a business
-//TODO: not going through
 app.post("/business", async (req, res) => {
-    //TODO: logic for when user does not pass in description, logo, or either
     console.log("request", req.body)
     try{
         await db.none(
@@ -76,9 +71,6 @@ app.post("/business", async (req, res) => {
     } catch(err){
         res.status(500).send(err)
     }
-    //get data from req.body
-    //db query to add business to business table
-    //route to /business
 });
 
 
